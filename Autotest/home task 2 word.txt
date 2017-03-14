@@ -1,0 +1,52 @@
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import org.junit.*;
+import static org.junit.Assert.*;
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+
+
+public class Search2Word {
+    private WebDriver driver;
+    private String baseUrl;
+    private String searchWord1;
+    private String searchWord2;
+
+
+    @Before
+    public void setUp() throws Exception {
+        driver = new ChromeDriver();
+        baseUrl = "https://www.google.com.ua/";
+        searchWord1 = "Trial";
+        searchWord2 = "Biked";
+
+        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+    }
+
+    @Test
+    public void testTurtles() throws Exception {
+        driver.get(baseUrl);
+        assertEquals("Error massege", "Google",  driver.getTitle());
+        driver.findElement(By.id("lst-ib")).clear();
+        driver.findElement(By.id("lst-ib")).sendKeys(searchWord1 + " " + searchWord2);
+        driver.findElement(By.cssSelector("#_fZl")).click();
+
+        List<WebElement> resultList = driver.findElements(By.cssSelector(".rc"));
+
+        for (WebElement word: resultList) {
+            assertTrue("The '"+searchWord1+"' word is missing in one of the search results!", word.getText().toLowerCase().contains(searchWord1.toLowerCase()) && word.getText().toLowerCase().contains(searchWord2.toLowerCase()));
+        // One or both of the words are missing in one of the search results
+        }
+
+
+    }
+
+    @After
+    public void tearDown() throws Exception {
+       driver.quit();
+
+    }
+
+}
+
